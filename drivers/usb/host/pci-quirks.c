@@ -89,6 +89,7 @@ enum amd_chipset_gen {
 	AMD_CHIPSET_HUDSON2,
 	AMD_CHIPSET_BOLTON,
 	AMD_CHIPSET_YANGTZE,
+	AMD_CHIPSET_TAISHAN,
 	AMD_CHIPSET_UNKNOWN,
 };
 
@@ -259,11 +260,12 @@ int usb_hcd_amd_remote_wakeup_quirk(struct pci_dev *pdev)
 {
 	/* Make sure amd chipset type has already been initialized */
 	usb_amd_find_chipset_info();
-	if (amd_chipset.sb_type.gen != AMD_CHIPSET_YANGTZE)
-		return 0;
-
-	dev_dbg(&pdev->dev, "QUIRK: Enable AMD remote wakeup fix\n");
-	return 1;
+	if (amd_chipset.sb_type.gen == AMD_CHIPSET_YANGTZE ||
+	    amd_chipset.sb_type.gen == AMD_CHIPSET_TAISHAN) {
+		dev_dbg(&pdev->dev, "QUIRK: Enable AMD remote wakeup fix\n");
+		return 1;
+	}
+	return 0;
 }
 EXPORT_SYMBOL_GPL(usb_hcd_amd_remote_wakeup_quirk);
 

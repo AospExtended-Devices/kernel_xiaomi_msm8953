@@ -34,6 +34,9 @@
 #include <linux/log2.h>
 #include <linux/cma.h>
 #include <linux/highmem.h>
+#include <linux/delay.h>
+#include <linux/kmemleak.h>
+#include <trace/events/cma.h>
 #include <linux/io.h>
 
 #include "cma.h"
@@ -60,10 +63,6 @@ static unsigned long cma_bitmap_aligned_mask(const struct cma *cma,
 	return (1UL << (align_order - cma->order_per_bit)) - 1;
 }
 
-<<<<<<< HEAD
-static unsigned long cma_bitmap_pages_to_bits(struct cma *cma,
-						unsigned long pages)
-=======
 /*
  * Find the offset of the base PFN from the specified align_order.
  * The value returned is represented in order_per_bits.
@@ -75,14 +74,8 @@ static unsigned long cma_bitmap_aligned_offset(const struct cma *cma,
 		>> cma->order_per_bit;
 }
 
-static unsigned long cma_bitmap_maxno(struct cma *cma)
-{
-	return cma->count >> cma->order_per_bit;
-}
-
 static unsigned long cma_bitmap_pages_to_bits(const struct cma *cma,
 					      unsigned long pages)
->>>>>>> v3.18.69
 {
 	return ALIGN(pages, 1UL << cma->order_per_bit) >> cma->order_per_bit;
 }
@@ -340,17 +333,13 @@ int __init cma_declare_contiguous(phys_addr_t base,
 			}
 		}
 
-<<<<<<< HEAD
 		if (addr < highmem_start)
 			kmemleak_no_scan(__va(addr));
-
-=======
 		/*
 		 * kmemleak scans/reads tracked objects for pointers to other
 		 * objects but this address isn't mapped and accessible
 		 */
 		kmemleak_ignore(phys_to_virt(addr));
->>>>>>> v3.18.69
 		base = addr;
 	}
 
