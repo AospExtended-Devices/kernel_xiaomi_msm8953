@@ -770,7 +770,7 @@ static int __check_input_term(struct mixer_build *state, int id,
 			} else { /* UAC_VERSION_3 */
 				struct uac3_input_terminal_descriptor *d = p1;
 
-				err = check_input_term(state,
+				err = __check_input_term(state,
 							d->bCSourceID, term);
 				if (err < 0)
 					return err;
@@ -1963,7 +1963,6 @@ static int parse_audio_mixer_unit(struct mixer_build *state, int unitid,
 	int input_pins, num_ins, num_outs;
 	int pin, ich, err;
 
-<<<<<<< HEAD
 	if (state->mixer->protocol == UAC_VERSION_3) {
 		input_pins = badd_baiof_mu_desc.bNrInPins;
 		num_outs =
@@ -1978,7 +1977,6 @@ static int parse_audio_mixer_unit(struct mixer_build *state, int unitid,
 				      unitid);
 			return -EINVAL;
 		}
-=======
 	if (desc->bLength < 11 || !(input_pins = desc->bNrInPins) ||
 	    desc->bLength < sizeof(*desc) + desc->bNrInPins ||
 	    !(num_outs = uac_mixer_unit_bNrChannels(desc))) {
@@ -1986,9 +1984,8 @@ static int parse_audio_mixer_unit(struct mixer_build *state, int unitid,
 			      "invalid MIXER UNIT descriptor %d\n",
 			      unitid);
 		return -EINVAL;
->>>>>>> v4.9.191
 	}
-
+}
 	num_ins = 0;
 	ich = 0;
 	for (pin = 0; pin < input_pins; pin++) {
